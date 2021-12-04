@@ -16,39 +16,51 @@ public class Connect4
             return "Game over";
         }
 
-        var row = rows[column];
+        var row = rows[column]--;
 
-        if (row < 0)
-        {
-            return "Column full";
-        }
+        if (row < 0) { return "Column full"; }
+
+        Player player;
 
         if (turn == PlayerNumber.One)
         {
             turn = PlayerNumber.Two;
-            grid[rows[column]--, column] = (int)playerOne.Number;
-
-            playerOne.IsWinner = ++playerOne.Movements >= 4 && IsWinner(playerOne.Number, row, column);
-
-            return playerOne.IsWinner ? "Player 1 won" : "It's player 2 turn";
+            player = playerOne;
+        }
+        else
+        {
+            turn = PlayerNumber.One;
+            player = playerTwo;
         }
 
-        turn = PlayerNumber.One;
-        grid[rows[column]--, column] = (int)playerTwo.Number;
-
-        playerTwo.IsWinner = ++playerTwo.Movements >= 4 && IsWinner(playerTwo.Number, row, column);
-
-        return playerTwo.IsWinner ? "Player 2 won" : "It's player 1 turn";
+        return CheckWinner(player, row, column);
     }
 
-    private bool IsWinner(PlayerNumber player, int x, int y)
+    private string CheckWinner(Player player, int row, int column)
     {
-        var number = (int)player;
+        var number = (int)player.Number;
+        grid[row, column] = number;
 
-        return CalculateColumns(number, x, y) ||
-            CalculateRows(number, x) ||
-            CalculateDiagonal1(number, x, y) ||
-            CalculateDiagonal2(number, x, y);
+        var isWinner = CalculateColumns(number, row, column) ||
+            CalculateRows(number, row) ||
+            CalculateDiagonal1(number, row, column) ||
+            CalculateDiagonal2(number, row, column);
+
+        player.IsWinner = ++player.Movements >= 4 && isWinner;
+
+        return player.IsWinner
+            ? $"Player {number} won"
+            : $"It's player {(number == 1 ? 2 : 1)} turn";
+    }
+
+    private bool CalculateColumns(int player, int x, int y)
+    {
+        if (x > 2) { return false; }
+
+        return grid[x, y] == player &&
+            grid[x + 1, y] == player &&
+            grid[x + 2, y] == player &&
+            grid[x + 3, y] == player;
     }
 
     private bool CalculateRows(int player, int x)
@@ -63,16 +75,6 @@ public class Connect4
         }
 
         return false;
-    }
-
-    private bool CalculateColumns(int player, int x, int y)
-    {
-        if (x > 2) { return false; }
-
-        return grid[x, y] == player &&
-            grid[x + 1, y] == player &&
-            grid[x + 2, y] == player &&
-            grid[x + 3, y] == player;
     }
 
     private bool CalculateDiagonal1(int player, int x, int y)
