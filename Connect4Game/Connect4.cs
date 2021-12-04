@@ -41,19 +41,18 @@ public class Connect4
         var number = (int)player.Number;
         grid[row, column] = number;
 
-        var isWinner = CalculateColumns(number, row, column) ||
-            CalculateRows(number, row) ||
-            CalculateDiagonal1(number, row, column) ||
-            CalculateDiagonal2(number, row, column);
-
-        player.IsWinner = ++player.Movements >= 4 && isWinner;
+        player.IsWinner = ++player.Movements >= 4 &&
+            (WonByColumns(number, row, column) ||
+             WonByRows(number, row) ||
+             WonByDownwardDiagonal(number, row, column) ||
+             WonByUpwardDiagonal(number, row, column));
 
         return player.IsWinner
             ? $"Player {number} won"
             : $"It's player {(number == 1 ? 2 : 1)} turn";
     }
 
-    private bool CalculateColumns(int player, int x, int y)
+    private bool WonByColumns(int player, int x, int y)
     {
         if (x > 2) { return false; }
 
@@ -63,7 +62,7 @@ public class Connect4
             grid[x + 3, y] == player;
     }
 
-    private bool CalculateRows(int player, int x)
+    private bool WonByRows(int player, int x)
     {
         var discsInARow = 0;
 
@@ -77,7 +76,7 @@ public class Connect4
         return false;
     }
 
-    private bool CalculateDiagonal1(int player, int x, int y)
+    private bool WonByDownwardDiagonal(int player, int x, int y)
     {
         if (x >= y)
         {
@@ -115,7 +114,7 @@ public class Connect4
         return false;
     }
 
-    private bool CalculateDiagonal2(int player, int x, int y)
+    private bool WonByUpwardDiagonal(int player, int x, int y)
     {
         var row = x + y;
         var column = y - (5 - x);
