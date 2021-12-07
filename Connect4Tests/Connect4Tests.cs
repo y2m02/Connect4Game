@@ -5,6 +5,9 @@ namespace Connect4Tests
 {
     public class Connect4Tests
     {
+        private const string playerOneWinMessage = "Player 1 won";
+        private const string playerTwoWinMessage = "Player 2 won";
+
         private Connect4 game;
 
         [SetUp]
@@ -55,7 +58,7 @@ namespace Connect4Tests
             game.Play(1); // 2
             var result = game.Play(0); // 1
 
-            Assert.That(result, Is.EqualTo("Player 1 won"));
+            Assert.That(result, Is.EqualTo(playerOneWinMessage));
         }
 
         [Test]
@@ -70,7 +73,7 @@ namespace Connect4Tests
             game.Play(3); // 1
             var result = game.Play(1); // 2
 
-            Assert.That(result, Is.EqualTo("Player 2 won"));
+            Assert.That(result, Is.EqualTo(playerTwoWinMessage));
         }
 
         [Test]
@@ -84,7 +87,7 @@ namespace Connect4Tests
             game.Play(2); // 2
             var result = game.Play(3); // 1
 
-            Assert.That(result, Is.EqualTo("Player 1 won"));
+            Assert.That(result, Is.EqualTo(playerOneWinMessage));
         }
 
         [Test]
@@ -99,7 +102,7 @@ namespace Connect4Tests
             game.Play(3); // 1
             var result = game.Play(4); // 2
 
-            Assert.That(result, Is.EqualTo("Player 2 won"));
+            Assert.That(result, Is.EqualTo(playerTwoWinMessage));
         }
 
         [Test]
@@ -119,7 +122,7 @@ namespace Connect4Tests
             game.Play(4); // 2
             var result = game.Play(3); // 1
 
-            Assert.That(result, Is.EqualTo("Player 1 won"));
+            Assert.That(result, Is.EqualTo(playerOneWinMessage));
         }
 
         [Test]
@@ -138,7 +141,7 @@ namespace Connect4Tests
             game.Play(4); // 1
             var result = game.Play(3); // 2
 
-            Assert.That(result, Is.EqualTo("Player 2 won"));
+            Assert.That(result, Is.EqualTo(playerTwoWinMessage));
         }
 
         [Test]
@@ -160,7 +163,7 @@ namespace Connect4Tests
             game.Play(0); // 2
             var result = game.Play(3); // 1
 
-            Assert.That(result, Is.EqualTo("Player 1 won"));
+            Assert.That(result, Is.EqualTo(playerOneWinMessage));
         }
 
         [Test]
@@ -183,7 +186,83 @@ namespace Connect4Tests
             game.Play(0); // 1
             var result = game.Play(3); // 2
 
-            Assert.That(result, Is.EqualTo("Player 2 won"));
+            Assert.That(result, Is.EqualTo(playerTwoWinMessage));
+        }
+
+        [Test]
+        public void Play_PlayerOneWonAtSomeTopUpwardDiagonalDiscs_ReturnPlayerOneWon()
+        {
+            game.Play(2); // 1
+            game.Play(2); // 2
+            game.Play(2); // 1
+            game.Play(3); // 2
+            game.Play(3); // 1
+            game.Play(0); // 2
+            game.Play(3); // 1
+            game.Play(2); // 2
+            game.Play(3); // 1
+            game.Play(4); // 2
+            game.Play(6); // 1
+            game.Play(4); // 2
+            game.Play(0); // 1
+            game.Play(4); // 2
+            game.Play(4); // 1
+            game.Play(2); // 2
+            game.Play(4); // 1
+            game.Play(5); // 2
+            game.Play(5); // 1
+            game.Play(5); // 2
+            game.Play(5); // 1
+            game.Play(5); // 2
+            var result = game.Play(5); // 1
+
+            Assert.That(result, Is.EqualTo(playerOneWinMessage));
+        }
+
+        [Test]
+        public void Play_PlayerTwoWonAtSomeTopUpwardDiagonalDiscs_ReturnPlayerTwoWon()
+        {
+            game.Play(0); // 1
+            game.Play(2); // 2
+            game.Play(2); // 1
+            game.Play(2); // 2
+            game.Play(3); // 1
+            game.Play(3); // 2
+            game.Play(0); // 1
+            game.Play(3); // 2
+            game.Play(2); // 1
+            game.Play(3); // 2
+            game.Play(4); // 1
+            game.Play(6); // 2
+            game.Play(4); // 1
+            game.Play(0); // 2
+            game.Play(4); // 1
+            game.Play(4); // 2
+            game.Play(2); // 1
+            game.Play(4); // 2
+            game.Play(5); // 1
+            game.Play(5); // 2
+            game.Play(5); // 1
+            game.Play(5); // 2
+            game.Play(5); // 1
+            var result = game.Play(5); // 2
+
+            Assert.That(result, Is.EqualTo(playerTwoWinMessage));
+        }
+
+        [Test]
+        public void Play_EitherPlayerOneOrTwoWon_ReturnGameIsOver()
+        {
+            game.Play(0); // 1
+            game.Play(0); // 2
+            game.Play(1); // 1
+            game.Play(1); // 2
+            game.Play(2); // 1
+            game.Play(2); // 2
+            game.Play(3); // 1
+            var result = game.Play(3); // 2
+
+            Assert.That(result, Is.EqualTo("Game over"));
         }
     }
 }
